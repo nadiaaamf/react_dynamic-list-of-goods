@@ -6,17 +6,39 @@ import { Good } from './types/Good';
 
 export const App: React.FC = () => {
   const [goods, setGoods] = useState<Good[]>([]);
+  const [error, setError] = useState<string>('');
 
-  const handleLoadAll = () => {
-    getAll().then(data => setGoods(data));
+  const handleLoadAll = async () => {
+    try {
+      setError('');
+      const data = await getAll();
+
+      setGoods(data);
+    } catch (err) {
+      setError('Network response was not ok');
+    }
   };
 
-  const handleLoad5First = () => {
-    get5First().then(data => setGoods(data));
+  const handleLoad5First = async () => {
+    try {
+      setGoods([]);
+      const data = await get5First();
+
+      setGoods(data);
+    } catch (err) {
+      setError('Network response was not ok');
+    }
   };
 
-  const handleLoadRed = () => {
-    getRedGoods().then(data => setGoods(data));
+  const handleLoadRed = async () => {
+    try {
+      setGoods([]);
+      const data = await getRedGoods();
+
+      setGoods(data);
+    } catch (err) {
+      setError('Network response was not ok');
+    }
   };
 
   return (
@@ -39,6 +61,7 @@ export const App: React.FC = () => {
         Load red goods
       </button>
 
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <GoodsList goods={goods} />
     </div>
   );
